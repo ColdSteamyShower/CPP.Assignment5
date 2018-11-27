@@ -1,6 +1,6 @@
 EXECUTABLE := Database
 
-SOURCES := databaseDriver.cpp ./Records/*.cpp Database.cpp ./Questioner/Questioner.cpp
+SOURCES := databaseDriver.cpp ./Records/*.cpp Database.cpp ./Questioner/Questioner.cpp ./Saves/ReaderWriter.cpp
 
 INCLUDES := -I ..\include
 EXT := exe

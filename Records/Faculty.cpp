@@ -20,6 +20,15 @@ Faculty::Faculty(int id, string n, string l, string dep)
   // advisee list left black
 }
 
+Faculty::Faculty(int id, string n, string l, string dep, list<int> adv)
+{
+  facultyID = id;
+  name = n;
+  level = l;
+  department = dep;
+  advisees = adv;
+}
+
 // constructor for comparing students
 Faculty::Faculty(int id)
 {

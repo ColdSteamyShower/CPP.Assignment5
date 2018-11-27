@@ -1,10 +1,12 @@
 #include <iostream>
+#include "./TemplateStack/GenStack.h"
 #include "Database.h"
 
 using namespace std;
 
 int main(){
   Database database;
+  GenStack<Database> rollbackCache;
 
   bool cont = true;
   string question = "------Database Menu------\nEnter number to select option:";
@@ -22,7 +24,7 @@ int main(){
     "Change a student advisor",
     "Remove an advisee from a faculty member",
     "Rollback",
-    "Exit"};
+    "Save and Exit"};
 
   while (cont)
   {
@@ -49,27 +51,42 @@ int main(){
         database.facultyToStudents();
         break;
       case 7:
+        rollbackCache.push(database);
         database.addStudent();
         break;
       case 8:
+        rollbackCache.push(database);
         database.deleteStudent();
         break;
       case 9: // works
+        rollbackCache.push(Database(database));
         database.addFaculty();
         break;
       case 10:
+        rollbackCache.push(database);
         database.deleteFaculty();
         break;
       case 11:
+        rollbackCache.push(database);
         database.updateStudentAdvisor();
         break;
       case 12:
+        rollbackCache.push(database);
         database.removeAdvisee();
         break;
       case 13:
-        cout << "Rollback" << endl;
+        try
+        {
+          rollbackCache.top().printFaculty();
+          database = rollbackCache.pop();
+          cout << "\nPrevious change to database has been reverted" << endl;
+        } catch (GenStackEmptyException e)
+        {
+          cout << "\nThere are no operations left to rollback!" << endl;
+        }
         break;
       case 14:
+        database.save();
         cont = false;
         break;
       default:

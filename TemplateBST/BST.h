@@ -5,12 +5,10 @@ using namespace std;
 
 template <typename T>
 class BST{
-private:
-
-  friend class Database;
+public:
   TreeNode<T> *root;
 
-public:
+
   BST();
   ~BST();
 

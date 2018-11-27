@@ -7,9 +7,8 @@
 using namespace std;
 
 class Student{
-private:
+public:
 
-  friend class Database;
   int studentID;
   string name;
   string level; // freshman, sophomore, junior, senior
@@ -17,7 +16,6 @@ private:
   double gpa;
   int advisor; // facultyID of their advisor
 
-public:
 
   // constructor
   Student();
