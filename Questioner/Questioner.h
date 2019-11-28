@@ -23,21 +23,21 @@ T demandType(string prompt, string msgIncorrect)
   return input;
 }
 
-int choiceToInt(string prompt, list<string> options)
+int choiceToInt(string prompt, string options[], int numOfOptions)
 {
   while (true){
-    int optionNum = 0;
-    cout << prompt << endl;
-    for (string s : options){
-      cout << ++optionNum << ". " << s << endl;
+    cout << prompt << endl;s
+    for (int i=1 ; i<=numOfOptions ; ++i){
+      cout << i << ". " << options[i-1] << endl;
     }
+    int option;
     cin >> option;
     if (!cin){
       cin.clear();
       cin.ignore();
-      cout << string( 100, '\n' ) << "A number is required..." << endl;
+      cout << endl << "A number is required..." << endl;
     } else if (option < 1 || numOfOptions <= option){
-      cout << string( 100, '\n' ) << "That is not an option..." << endl;
+      cout << endl << "That is not an option..." << endl;
     } else {
       return option;
     }

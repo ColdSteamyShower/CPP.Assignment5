@@ -11,6 +11,9 @@
 class Database{
 private:
 
+  const list<string> levels // freshman, sophomore, junior or senior
+  const list<string> departments //  lecturer, assistant prof., associate prof
+
   BST<Student> studentTree;
   BST<Faculty> facultyTree;
 
