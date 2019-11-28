@@ -6,6 +6,8 @@ using namespace std;
 template <typename T>
 class BST{
 private:
+
+  friend class Database;
   TreeNode<T> *root;
 
 public:
@@ -13,6 +15,7 @@ public:
   ~BST();
 
   bool search(T value); // returns true if the value exists in the tree
+  TreeNode* access(T value); // accesses the requested value. Returns NULL pointer if it does not exist
   void insert(T value);
 
   bool deleteNode(T value);
@@ -39,13 +42,11 @@ BST<T>::~BST(){
 }
 
 template <typename T>
-void BST<T>::recPrint(TreeNode<T> *node, int level)
+void BST<T>::recPrint(TreeNode<T> *node)
 {
   if(node == NULL)
     return;
 
-  for(int i=0 ; i<level ; ++i)
-    cout << "---";
   cout << node->key << endl;
   recPrint(node->left, (level+1));
   recPrint(node->right, (level+1));
@@ -53,7 +54,7 @@ void BST<T>::recPrint(TreeNode<T> *node, int level)
 
 template <typename T>
 void BST<T>::printTree(){
-  recPrint(root, 0);
+  recPrint(root);
 }
 
 template <typename T>
@@ -140,6 +141,27 @@ bool BST<T>::search(T value){
     }
   }
   return true;
+}
+
+template <typename T>
+TreeNode* BST<T>::access(T value){
+
+  if (root==NULL){
+    return NULL;
+  }else{
+    // tree is not empty, let's attempt to look for it
+    TreeNode<T> *current = root;
+    while (current->key != value){
+      if(value < current->key)
+        current = current->left;
+      else
+        current = current->right;
+
+      if(current == NULL) // we did not find the value
+        return NULL;
+    }
+  }
+  return current;
 }
 
 template <typename T>

@@ -3,5 +3,13 @@ Ayden Best
 
 ---===[Template BST Sources]===---
 
-[In Class] Used integer BST for base
-[Self] Converted BST to be a generic structure
+[In Class]
+Used integer BST for base
+
+[Self]
+Converted BST to be a generic structure
+
+---===[Record Classes(Student/Faculty)]===---
+
+[https://docs.microsoft.com/en-us/cpp/standard-library/overloading-the-output-operator-for-your-own-classes?view=vs-2019]
+Used to understand how to override << to know what to do when printing a class object

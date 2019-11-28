@@ -1,3 +1,7 @@
+// 2317839
+// Ayden Best
+// Class for handling faculty members
+
 #include <list> // because I'm lazy and don't want to make an iterator
 
 using namespace std;
@@ -5,6 +9,7 @@ using namespace std;
 class Faculty{
 private:
 
+  friend class Database;
   int facultyID;
   string name;
   string level; // lecturer, assistant prof., associate prof)
@@ -44,11 +49,20 @@ public:
     return (f1.facultyID < f2.facultyID);
   }
 
-  //
-  // Mutator Functions
-  //
-
-  void addStudent
+  friend ostream& operator<<(ostream& out, const Faculty& f)
+  {
+    out << "-----===[Faculty Member #" << facultyID << "]===-----" << endl
+         << "Name: " << name << endl
+         << "Position: " << level << endl
+         << "Department: " << department << endl
+         << "Advisees: ";
+    for(int i : advisees)
+    {
+      out << i << "; ";
+    }
+    out << endl;
+    return out;
+  }
 
 
   void print();

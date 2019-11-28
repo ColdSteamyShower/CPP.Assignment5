@@ -1,3 +1,7 @@
+// 2317839
+// Ayden Best
+// Class for handling student members
+
 #include <iostream>
 
 using namespace std;
@@ -5,6 +9,7 @@ using namespace std;
 class Student{
 private:
 
+  friend class Database;
   int studentID;
   string name;
   string level; // freshman, sophomore, junior, senior
@@ -42,6 +47,18 @@ public:
   {
     return (s1.studentID < s2.studentID);
   }
+
+  friend ostream& operator<<(ostream& out, const Student& f)
+  {
+    out << "-----===[Student #" << studentID << "]===-----" << endl
+        << "Name: " << name << endl
+        << "Grade: " << level << endl
+        << "Major: " << major << endl
+        << "GPA: " << gpa << endl
+        << "Advisor: Faculty Advsisor #" << advisor << endl << endl;
+    return out;
+  }
+
 
   // who needs mutator functions? not me, thats who
 

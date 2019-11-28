@@ -32,11 +32,9 @@ void Faculty::print()
        << "Position: " << level << endl
        << "Department: " << department << endl
        << "Advisees: ";
-  for (list<int>::iterator s=advisees.begin(); s != advisees.end(); ++s)
+  for(int i : advisees)
   {
-    cout << s->studentID;
-    if (s != advisees.end())
-      cout << ", ";
+    cout << i << "; ";
   }
   cout << endl;
 }
