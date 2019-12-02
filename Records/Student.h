@@ -20,10 +20,12 @@ private:
 public:
 
   // constructor
+  Student();
+
   Student(int id, string n, string l, string m, double grade, int a);
 
   // constructor for comparing students
-  Student(int id, string l, string m);
+  Student(int id);
 
   // destructor not necessary because the class does not deal with pointers
 
@@ -48,14 +50,14 @@ public:
     return (s1.studentID < s2.studentID);
   }
 
-  friend ostream& operator<<(ostream& out, const Student& f)
+  friend ostream& operator<<(ostream& out, const Student& s)
   {
-    out << "-----===[Student #" << studentID << "]===-----" << endl
-        << "Name: " << name << endl
-        << "Grade: " << level << endl
-        << "Major: " << major << endl
-        << "GPA: " << gpa << endl
-        << "Advisor: Faculty Advsisor #" << advisor << endl << endl;
+    out << "-----===[Student #" << s.studentID << "]===-----" << endl
+        << "Name: " << s.name << endl
+        << "Grade: " << s.level << endl
+        << "Major: " << s.major << endl
+        << "GPA: " << s.gpa << endl
+        << "Advisor: Faculty Advsisor #" << s.advisor << endl << endl;
     return out;
   }
 

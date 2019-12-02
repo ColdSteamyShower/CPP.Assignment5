@@ -15,18 +15,54 @@ Database::Database()
 
 Database::~Database()
 {
-  delete studentTree;
-  delete facultyTree;
+
 }
 
 Student* Database::findStudent(int id)
 {
-  return studentTree.access(new Student(id, "", ""))->value;
+  Student s(id);
+  return &(studentTree.access(s)->key);
 }
 
 Faculty* Database::findFaculty(int id)
 {
-  return facultyTree.access(new Faculty(id, "", ""))->value;
+  Faculty f(id);
+  return &(facultyTree.access(f)->key);}
+
+int Database::pickStudent()
+{
+  int id;
+  while (true){
+    id = demandType<int>("Please enter student's ID(0 to exit): ","An integer is required...");
+    if (id == 0)
+      return id;
+    if (!studentTree.search(id)) // if the tree does not contain the student
+    {
+      cout << "Student with that ID does not exist, please choose another" << endl;
+      continue;
+    }
+    break;
+  }
+  cout << "Successfully found student with ID " << id << endl;
+  return id;
+}
+
+int Database::pickFaculty()
+{
+  int id;
+  while (true){
+    id = demandType<int>("Please enter faculty member's ID(0 to exit): ","An integer is required...");
+    if (id == 0)
+      return id;
+    if (!facultyTree.search(id)) // if the tree does not contain the student
+    {
+      cout << "Faculty member with that ID does not exist, please choose another" << endl;
+      continue;
+    }
+    break;
+  }
+  cout << "Successfully found faculty with ID " << id << endl;
+  return id;
 }
 
 void Database::printStudents()
@@ -41,44 +77,42 @@ void Database::printFaculty()
 
 void Database::displayStudent()
 {
-  int id = demandType<int>("Please enter student ID: ","An integer is required...");
-  Student* studentPtr = findStudent(id);
-  if (studentPtr == NULL)
-  {
-    cout << "No student found with ID:" << id << endl;
+  int id = pickStudent(); // have user give the id of a real student
+  if (id == 0)
     return;
-  }
+  Student* studentPtr = findStudent(id);
   studentPtr->print();
 }
 
 void Database::displayFaculty()
 {
-  int id = demandType<int>("Please enter faculty member ID: ","An integer is required...");
-  Faculty* facultyPtr = findFaculty(id);
-  if (facultyPtr == NULL)
-  {
-    cout << "No faculty member found with ID:" << id << endl;
+  int id = pickFaculty(); // have user give the id of a real faculty member
+  if (id == 0)
     return;
-  }
+  Faculty* facultyPtr = findFaculty(id);
   facultyPtr->print();
 }
 
 void Database::studentToFaculty()
 {
-  int id = demandType<int>("Please enter student ID: ","An integer is required...");
-  Student* studentPtr = findStudent();
-  int studentid = studentPtr->studentID;
-  Faculty* facultyPtr = findFaculty(studentid);
+  int id = pickStudent(); // have user give the id of a real student
+  if (id == 0)
+    return;
+  Student* studentPtr = findStudent(id);
+  int advisorid = studentPtr->advisor;
+  Faculty* facultyPtr = findFaculty(advisorid);
   cout << "Student #" << id << " has advisor:" << endl;
   facultyPtr->print();
 }
 
-void Database::facultyToStudents(int id)
+void Database::facultyToStudents()
 {
-  int id = demandType<int>("Please enter faculty member ID: ","An integer is required...",);
+  int id = pickFaculty(); // have user give the id of a real faculty member
+  if (id == 0)
+    return;
   Faculty* facultyPtr = findFaculty(id);
-  cout << "Faculty Member #" << id << " advises Students:" << endl;
-  int unfound = 0;
+  cout << "Faculty Member #" << id << " advisees Students:" << endl;
+  int unfound = 0; // to keep track of any advisees that do not exist, this should always be 0
   for(int studentid : facultyPtr->advisees)
   {
     Student* studentPtr = findStudent(studentid);
@@ -96,9 +130,11 @@ void Database::facultyToStudents(int id)
 void Database::addStudent()
 {
       // get id
+  // This annoying block of code is used separately, because this variation is only used once
+  ////////////
   int id;
   while (true){
-    int id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...",);
+    id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
     if (studentTree.search(id)) // if the tree contains the student already
@@ -108,14 +144,15 @@ void Database::addStudent()
     }
     break;
   }
+  //////////
 
       // get name
-  int name = demandType<string>("Please enter student's name: ","A string is required... How do you see this?");
+  string name = demandType<string>("Please enter student's name: ","A string is required... How do you see this?");
       // get major
-  int major = demandType<string>("Please enter student's major: ","A string is required... How do you see this?");
+  string major = demandType<string>("Please enter student's major: ","A string is required... How do you see this?");
       // get level
-  int level;
-  switch (choiceToInt("What is this student's grade?",["Freshman","Sophomore","Junior","Senior"],4)){
+  string level;
+  switch (choiceToInt("What is this student's grade?",levels,4)){
     case 1:
       level = "Freshman";
       break;
@@ -134,26 +171,15 @@ void Database::addStudent()
       // get gpa
   double grade = demandType<double>("Please enter student GPA: ","A double is required...");
       // get adviser
-  int a;
-  while (true)
-  {
-    int advisorID = demandType<int>("Please enter student's advisor's ID(0 to exit): ","An integer is required...",);
-    if (!facultyTree.search(advisorID)) // if the advisors ID is unavailable
-    {
-      cout << "A faculty member with that ID is not available" << endl;
-      continue;
-    }
-    break;
-  }
+  int advisorID = pickFaculty(); // have user give the id of a real faculty member
   if (advisorID == 0)
-  return;
-
+    return;
   // add the student to the tree
-  studentTree.insert(new Student(int id, string name, string level, string major, double grade, int advisorID));
+  studentTree.insert(Student(id, name, level, major, grade, advisorID));
 
   // add student id to advisor
-  Faculty* facultyPtr = findFaculty(new Student(advisorID, "", ""));
-  facultyPtr->advisees->push_back(id);
+  Faculty* facultyPtr = findFaculty(advisorID);
+  facultyPtr->advisees.push_back(id);
 
 }
 
@@ -162,7 +188,7 @@ void Database::deleteStudent()
     // get id
   int id;
   while (true){
-    int id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...",);
+    id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
     if (!studentTree.search(id)) // if the tree contains the student already
@@ -178,16 +204,16 @@ void Database::deleteStudent()
   Student* studentPtr = findStudent(id);
   int adv = studentPtr->advisor;
   Faculty* facultyPtr = findFaculty(adv);
-  facultyPtr->advisees->remove(adv)
-  studentTree.deleteNode(new Student(id, "", ""));
+  facultyPtr->advisees.remove(id);
+  studentTree.deleteNode(Student(id));
 }
 
-void Database::addFaculty(int id, string n, string l, string dep, int a)
+void Database::addFaculty()
 {
   // get id
   int id;
   while (true){
-    int id = demandType<int>("Please enter faculty member's ID(0 to exit): ","An integer is required...",);
+    id = demandType<int>("Please enter faculty member's ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
     if (facultyTree.search(id)) // if the tree contains the faculty member already
@@ -197,15 +223,15 @@ void Database::addFaculty(int id, string n, string l, string dep, int a)
     }
     break;
   }
-}
+
 
     // get name
-  int name = demandType<string>("Please enter faculty member's name: ","A string is required... How do you see this?");
+  string name = demandType<string>("Please enter faculty member's name: ","A string is required... How do you see this?");
     // get major
-  int department = demandType<string>("Please enter faculty member's department: ","A string is required... How do you see this?");
+  string department = demandType<string>("Please enter faculty member's department: ","A string is required... How do you see this?");
     // get level
-  int level;
-  switch (choiceToInt("What is this faculty member's position?",["Lecturer","Assistant Professor","Associate Professor"],3))
+  string level;
+  switch (choiceToInt("What is this faculty member's position?",departments,3))
   {
     case 1:
       level = "Lecturer";
@@ -220,38 +246,45 @@ void Database::addFaculty(int id, string n, string l, string dep, int a)
       level = "";
   }
     // advisee list will be empty be default
+
+  // create the faculty member
+  facultyTree.insert(Faculty(id, name, level, department));
 }
 
 void Database::deleteFaculty()
 {
   int choice; // 1 = delete advisees, 2 = migrate advisees
-  choice = choiceToInt("What would you like to do with the faculty member's advisees?",["Delete Advisees","Migrate to new faculty member",2]);
+  string options[2] = {"Delete Advisees","Migrate to new faculty"};
+  choice = choiceToInt("What would you like to do with the faculty member's advisees?",options,2);
 
   int id;
   while (true){
-    int id = demandType<int>("Please enter faculty member's ID to delete(0 to exit): ","An integer is required...",);
+    id = demandType<int>("Please enter faculty member's ID to delete(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
-    if (!facultyTree.search(id)) // if the tree contains the faculty member already
+    if (!facultyTree.search(id)) // if the tree does not contain the faculty member
     {
       cout << "Faculty member with that ID does not exist, please choose another" << endl;
       continue;
     }
     break;
   }
+  Faculty* facultyPtr;
+
+  // perform the deletion
+
   if (choice == 1) // delete all the advisees
   {
-    Faculty* facultyPtr = findFaculty(id);
+    facultyPtr = findFaculty(id);
     for (int i : facultyPtr->advisees)
     {
-      Student* studentPtr = findStudent(i);
-      studentTree.deleteNode(studentPtr);
+      studentTree.deleteNode(Student(i));
     }
-  } else if (choice == 2) // migrate all advisees
+  } else if (choice == 2) // migrate all advisees to new faculty member
   {
     int migrateid;
     while (true){
-      int migrateid = demandType<int>("Please enter faculty member's ID to migrate to(0 to exit): ","An integer is required...",);
+      migrateid = demandType<int>("Please enter faculty member's ID to migrate to(0 to exit): ","An integer is required...");
       if (id == 0)
         return;
       if (!facultyTree.search(id)) // if the tree does not contain the faculty member
@@ -266,13 +299,85 @@ void Database::deleteFaculty()
       Student* studentPtr = findStudent(i);
       studentPtr->studentID = migrateid;
       Faculty* migrateFaculty = findFaculty(migrateid);
-      migrateFaculty->advisees->push_back(i);
+      migrateFaculty->advisees.push_back(i);
     }
-    facultyTree.deleteNode(Faculty(id,"",""));
   }
+  facultyTree.deleteNode(Faculty(id));
 }
 
-//void Database::updateStudentAdvisor()
+void Database::updateStudentAdvisor()
+{
+    // target student and new advisor
+    int studentid = pickStudent();
+    if (studentid == 0)
+      return;
+    Student* studentPtr = findStudent(studentid);
 
+    int facultyid = pickFaculty();
+    if (facultyid == 0)
+      return;
+    Faculty* facultyPtr = findFaculty(facultyid);
 
-//void Database::removeAdvisee()
+    // remove student id from old faculty member
+    Faculty* oldAdvisor = findFaculty(studentPtr->advisor);
+    oldAdvisor->advisees.remove(studentid);
+
+    // add student id to new faculty member
+    facultyPtr->advisees.push_back(studentid);
+
+    // change student's advisor id
+    studentPtr->advisor = facultyid;
+}
+
+void Database::removeAdvisee()
+{
+    // target the faculty member
+  int facultyid = pickFaculty();
+  if (facultyid == 0)
+    return;
+  Faculty* facultyPtr = findFaculty(facultyid);
+
+    // get the id of the student to delete
+  int studentid;
+  while (true)
+  {
+    cout << "Advisees: ";
+    for(int s : facultyPtr->advisees)
+      cout << s;
+    cout << endl;
+    studentid = demandType<int>("Please enter advisee's ID to delete(0 to exit): ","An integer is required...");
+    if (studentid == 0)
+      return;
+    bool contains = false;
+    for (int s : facultyPtr->advisees)
+    {
+      if (studentid == s)
+        contains = true;
+    }
+    if (contains)
+      break;
+    else
+      cout << "The student #" << studentid << " is not an advisee. Please try again" << endl;
+  }
+    // target the student
+  Student* studentPtr = findStudent(studentid);
+
+    // decide what to do with the student
+  string options[2] = {"Delete","Migrate"};
+  int choice = choiceToInt("What would you like to do with the advised student?",options,2);
+
+    // execute the deletion
+  if (choice == 1){ // delete the student
+    facultyPtr->advisees.remove(studentid);
+    studentTree.deleteNode(Student(studentid));
+  } else if (choice == 2){ // migrate the student
+    // get new faculty member
+    int newFacultyid = pickFaculty();
+    Faculty* newFacultyPtr = findFaculty(newFacultyid);
+
+    // remove from old faculty, replace student's advisor, add to new faculty
+    facultyPtr->advisees.remove(studentid);
+    studentPtr->advisor = newFacultyid;
+    newFacultyPtr->advisees.push_back(studentid);
+  }
+}

@@ -19,10 +19,12 @@ private:
 public:
 
   // constructor
-  Faculty(int id, string n, string l, string dep, int a);
+  Faculty();
+
+  Faculty(int id, string n, string l, string dep);
 
   // constructor for comparing students
-  Faculty(int id, string l, string dep);
+  Faculty(int id);
 
   // destructor not necessary because the class does not deal with pointers
 
@@ -51,12 +53,12 @@ public:
 
   friend ostream& operator<<(ostream& out, const Faculty& f)
   {
-    out << "-----===[Faculty Member #" << facultyID << "]===-----" << endl
-         << "Name: " << name << endl
-         << "Position: " << level << endl
-         << "Department: " << department << endl
+    out << "-----===[Faculty Member #" << f.facultyID << "]===-----" << endl
+         << "Name: " << f.name << endl
+         << "Position: " << f.level << endl
+         << "Department: " << f.department << endl
          << "Advisees: ";
-    for(int i : advisees)
+    for(int i : f.advisees)
     {
       out << i << "; ";
     }

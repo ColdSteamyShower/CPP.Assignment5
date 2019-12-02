@@ -3,17 +3,16 @@
 // Class for holding two databases and handles all operations needed on the databases
 
 #include <iostream>
-#include "Questioner.h"
+#include "./Questioner/Questioner.h"
 #include "./TemplateBST/BST.h"
 #include "./Records/Faculty.h"
-#include "./Records/Students.h"
+#include "./Records/Student.h"
 
 class Database{
 private:
 
-  const list<string> levels // freshman, sophomore, junior or senior
-  const list<string> departments //  lecturer, assistant prof., associate prof
-
+  string levels[4] = {"Freshman","Sophomore","Junior","Senior"};
+  string departments[3] = {"Lecturer","Assistant Professor","Associate Professor"};
   BST<Student> studentTree;
   BST<Faculty> facultyTree;
 
@@ -22,13 +21,16 @@ public:
   Database(); // loads the databases from files, otherwise creates blank databases
   ~Database();
 
-  Student* findStudent(int id);
-  Faculty* findFaculty(int id);
+  Student* findStudent(int id); // Return a pointer to the student with this id
+  Faculty* findFaculty(int id); // return a pointer to the faculty with this id
+
+  int pickStudent(); // ask the user to give the id of a valid
+  int pickFaculty();
 
   void printStudents();
   void printFaculty();
-  void displayStudent(int id);
-  void displayFaculty(int id);
+  void displayStudent();
+  void displayFaculty();
   void studentToFaculty();
   void facultyToStudents();
   void addStudent();

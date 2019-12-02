@@ -15,7 +15,7 @@ public:
   ~BST();
 
   bool search(T value); // returns true if the value exists in the tree
-  TreeNode* access(T value); // accesses the requested value. Returns NULL pointer if it does not exist
+  TreeNode<T>* access(T value); // accesses the requested value. Returns NULL pointer if it does not exist
   void insert(T value);
 
   bool deleteNode(T value);
@@ -26,7 +26,7 @@ public:
   TreeNode<T>* getMax();
 
   void printTree();
-  void recPrint(TreeNode<T> *node, int level);
+  void recPrint(TreeNode<T> *node);
 
   TreeNode<T>* getSuccessor(TreeNode<T> *d);
 };
@@ -48,8 +48,8 @@ void BST<T>::recPrint(TreeNode<T> *node)
     return;
 
   cout << node->key << endl;
-  recPrint(node->left, (level+1));
-  recPrint(node->right, (level+1));
+  recPrint(node->left);
+  recPrint(node->right);
 }
 
 template <typename T>
@@ -144,13 +144,15 @@ bool BST<T>::search(T value){
 }
 
 template <typename T>
-TreeNode* BST<T>::access(T value){
+TreeNode<T>* BST<T>::access(T value){
+
+  TreeNode<T>* current;
 
   if (root==NULL){
     return NULL;
   }else{
     // tree is not empty, let's attempt to look for it
-    TreeNode<T> *current = root;
+    current = root;
     while (current->key != value){
       if(value < current->key)
         current = current->left;
@@ -197,7 +199,6 @@ bool BST<T>::deleteNode(T value){
 
   // no children
   if(current->left == NULL && current->right == NULL){
-    cout << "[Deletion] The deleted node has no children and will simply be removed" << endl;
     if(current == root){
       root = NULL;
     } else if (isLeft){
@@ -210,7 +211,6 @@ bool BST<T>::deleteNode(T value){
   // node has children, we need to determine if child is left or right to proceed
   else if (current->right == NULL) // has no right child
   {
-    cout << "[Deletion] The deleted node only has a left child, " << current->left->key << ", which will replace it" << endl;
     if (current == root)
     {
       root = current->left;
@@ -227,7 +227,6 @@ bool BST<T>::deleteNode(T value){
 
   else if (current->left == NULL) // has no left child
   {
-    cout << "[Deletion] The deleted node only has a right child, " << current->right->key << ", which will replace it" << endl;
     if (current == root){
       root = current->right;
     } else if (isLeft){

@@ -3,21 +3,30 @@
 
 using namespace std;
 
-Faculty::Faculty(int id, string n, string l, string dep, int a)
+Faculty::Faculty()
+{
+  facultyID = 0;
+  name = "";
+  level = "";
+  department = "";
+}
+
+Faculty::Faculty(int id, string n, string l, string dep)
 {
   facultyID = id;
   name = n;
   level = l;
   department = dep;
+  // advisee list left black
 }
 
 // constructor for comparing students
-Faculty::Faculty(int id, string l, string dep)
+Faculty::Faculty(int id)
 {
   facultyID = id;
   name = "";
-  level = l;
-  department = dep;
+  level = "";
+  department = "";
 }
 
 // destructor not necessary because the class does not deal with pointers

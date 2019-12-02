@@ -4,6 +4,16 @@
 using namespace std;
 
 // constructor
+Student::Student()
+{
+  studentID = 0;
+  name = "";
+  level = "";
+  major = "";
+  gpa = 0.0;
+  advisor = 0;
+}
+
 Student::Student(int id, string n, string l, string m, double grade, int a)
 {
   studentID = id;
@@ -15,12 +25,12 @@ Student::Student(int id, string n, string l, string m, double grade, int a)
 }
 
 // constructor for comparing students
-Student::Student(int id, string l, string m)
+Student::Student(int id)
 {
   studentID = id;
   name = "";
-  level = l;
-  major = m;
+  level = "";
+  major = "";
   gpa = 0.0;
   advisor = -1;
 }
@@ -35,6 +45,6 @@ void Student::print()
        << "Grade: " << level << endl
        << "Major: " << major << endl
        << "GPA: " << gpa << endl
-       << "Advisor: Faculty Advsisor #" << advisor << endl << endl;
+       << "Advised by Faculty Advisor #" << advisor << endl << endl;
 }
 // print all student information to console
