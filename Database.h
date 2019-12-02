@@ -9,16 +9,16 @@
 #include "./Records/Student.h"
 
 class Database{
-private:
+public:
 
   string levels[4] = {"Freshman","Sophomore","Junior","Senior"};
   string departments[3] = {"Lecturer","Assistant Professor","Associate Professor"};
   BST<Student> studentTree;
   BST<Faculty> facultyTree;
 
-public:
 
   Database(); // loads the databases from files, otherwise creates blank databases
+  Database(const Database &d); // copy constructor for rollbacks
   ~Database();
 
   Student* findStudent(int id); // Return a pointer to the student with this id
@@ -39,5 +39,7 @@ public:
   void deleteFaculty();
   void updateStudentAdvisor();
   void removeAdvisee();
+
+  void save();
 
 };

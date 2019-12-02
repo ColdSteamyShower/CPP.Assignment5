@@ -7,21 +7,21 @@
 using namespace std;
 
 class Faculty{
-private:
+public:
 
-  friend class Database;
   int facultyID;
   string name;
   string level; // lecturer, assistant prof., associate prof)
   string department;
   list<int> advisees; // list of students that this faculty member advises
 
-public:
 
   // constructor
   Faculty();
 
   Faculty(int id, string n, string l, string dep);
+
+  Faculty(int id, string n, string l, string dep, list<int> adv);
 
   // constructor for comparing students
   Faculty(int id);

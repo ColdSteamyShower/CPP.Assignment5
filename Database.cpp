@@ -5,12 +5,28 @@
 #include <iostream>
 #include <list>
 #include "Database.h"
+#include "./Saves/ReaderWriter.h"
 
 using namespace std;
 
 Database::Database()
 {
+  studentTree = readStudentFile();
+  facultyTree = readFacultyFile();
+}
 
+void Database::save()
+{
+  BST<Student>* sTree = &studentTree;
+  BST<Faculty>* fTree = &facultyTree;
+
+  writeFile(sTree, fTree);
+}
+
+Database::Database(const Database &d)
+{
+  studentTree = d.studentTree;
+  facultyTree = d.facultyTree;
 }
 
 Database::~Database()
@@ -36,7 +52,7 @@ int Database::pickStudent()
     id = demandType<int>("Please enter student's ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return id;
-    if (!studentTree.search(id)) // if the tree does not contain the student
+    if (!studentTree.search(Student(id))) // if the tree does not contain the student
     {
       cout << "Student with that ID does not exist, please choose another" << endl;
       continue;
@@ -54,7 +70,7 @@ int Database::pickFaculty()
     id = demandType<int>("Please enter faculty member's ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return id;
-    if (!facultyTree.search(id)) // if the tree does not contain the student
+    if (!facultyTree.search(Faculty(id))) // if the tree does not contain the student
     {
       cout << "Faculty member with that ID does not exist, please choose another" << endl;
       continue;
@@ -137,7 +153,7 @@ void Database::addStudent()
     id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
-    if (studentTree.search(id)) // if the tree contains the student already
+    if (studentTree.search(Student(id))) // if the tree contains the student already
     {
       cout << "Student with that ID already exists, please choose another" << endl;
       continue;
@@ -191,7 +207,7 @@ void Database::deleteStudent()
     id = demandType<int>("Please enter student ID(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
-    if (!studentTree.search(id)) // if the tree contains the student already
+    if (!studentTree.search(Student(id))) // if the tree contains the student already
     {
       cout << "Student with that ID does not exist, please choose another" << endl;
       continue;
@@ -262,20 +278,21 @@ void Database::deleteFaculty()
     id = demandType<int>("Please enter faculty member's ID to delete(0 to exit): ","An integer is required...");
     if (id == 0)
       return;
-    if (!facultyTree.search(id)) // if the tree does not contain the faculty member
+    if (!facultyTree.search(Faculty(id))) // if the tree does not contain the faculty member
     {
       cout << "Faculty member with that ID does not exist, please choose another" << endl;
       continue;
     }
     break;
   }
+
   Faculty* facultyPtr;
+  facultyPtr = findFaculty(id);
 
   // perform the deletion
 
   if (choice == 1) // delete all the advisees
   {
-    facultyPtr = findFaculty(id);
     for (int i : facultyPtr->advisees)
     {
       studentTree.deleteNode(Student(i));
@@ -287,7 +304,7 @@ void Database::deleteFaculty()
       migrateid = demandType<int>("Please enter faculty member's ID to migrate to(0 to exit): ","An integer is required...");
       if (id == 0)
         return;
-      if (!facultyTree.search(id)) // if the tree does not contain the faculty member
+      if (!facultyTree.search(Faculty(id))) // if the tree does not contain the faculty member
       {
         cout << "Faculty member with that ID does not exist, please choose another" << endl;
         continue;
